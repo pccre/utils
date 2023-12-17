@@ -7,8 +7,9 @@ import (
 )
 
 type WS struct {
-	WS  *websocket.Conn
-	Mut *sync.Mutex
+	WS     *websocket.Conn
+	Mut    *sync.Mutex
+	Closer chan int
 }
 
 func (c *WS) WriteJSON(content interface{}) error {
@@ -23,4 +24,8 @@ func (c *WS) WriteRaw(content []byte) error {
 	c.Mut.Lock()
 	defer c.Mut.Unlock()
 	return c.WS.WriteMessage(1, content)
+}
+
+func (c *WS) Close() {
+	c.Closer <- 1
 }
