@@ -18,3 +18,16 @@ func (m *Map[K, V]) Get(key K) V {
 	defer m.Mut.RUnlock()
 	return m.Map[key]
 }
+
+func (m *Map[K, V]) GetValueAndState(key K) (data V, ok bool) {
+	m.Mut.RLock()
+	defer m.Mut.RUnlock()
+	data, ok = m.Map[key]
+	return
+}
+
+func (m *Map[K, V]) Remove(key K) {
+	m.Mut.Lock()
+	delete(m.Map, key)
+	m.Mut.Unlock()
+}
